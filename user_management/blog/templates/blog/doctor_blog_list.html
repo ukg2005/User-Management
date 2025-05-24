@@ -1,0 +1,42 @@
+{% extends "blog/base.html" %}
+
+{% block title %}My Blog Posts{% endblock %}
+
+{% block content %}
+    <h1>My Blog Posts</h1>
+    
+    <a href="{% url 'create_blog' %}" class="btn">Create New Blog Post</a>
+    
+    <div style="margin-top: 20px;">
+        {% if blogs %}
+            <div class="blog-grid">
+                {% for blog in blogs %}
+                    <div class="card">
+                        {% if blog.image %}
+                            <img src="{{ blog.image.url }}" class="blog-image" alt="{{ blog.title }}">
+                        {% endif %}
+                        <div class="card-header">
+                            <h3>{{ blog.title }}</h3>
+                            <small>Category: {{ blog.category|default:"Uncategorized" }}</small>
+                            <p>
+                                <span style="color: {% if blog.is_draft %}orange{% else %}green{% endif %};">
+                                    {% if blog.is_draft %}Draft{% else %}Published{% endif %}
+                                </span>
+                                &bull; {{ blog.created_at|date:"F d, Y" }}
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ blog.summary|truncatewords:15 }}{% if blog.summary|wordcount > 15 %}...{% endif %}</p>
+                            <div style="display: flex; justify-content: space-between;">
+                                <a href="{% url 'edit_blog' blog.id %}" class="btn">Edit</a>
+                                <a href="{% url 'blog_detail' blog.id %}" class="btn btn-secondary">View</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>You haven't created any blog posts yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}

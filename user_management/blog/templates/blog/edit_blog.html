@@ -1,0 +1,76 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Edit Blog Post{% endblock %}
+
+{% block content %}
+    <h1>Edit Blog Post</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Title:</label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <div class="error">{{ form.title.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.category.id_for_label }}">Category:</label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <div class="error">{{ form.category.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.image.id_for_label }}">Image:</label>
+                    {{ form.image }}
+                    {% if form.image.errors %}
+                        <div class="error">{{ form.image.errors }}</div>
+                    {% endif %}
+                    {% if blog.image %}
+                        <div style="margin-top: 10px;">
+                            <p>Current image:</p>
+                            <img src="{{ blog.image.url }}" alt="{{ blog.title }}" style="max-width: 200px;">
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.summary.id_for_label }}">Summary:</label>
+                    {{ form.summary }}
+                    {% if form.summary.errors %}
+                        <div class="error">{{ form.summary.errors }}</div>
+                    {% endif %}
+                    <small class="text-muted">Keep summary to approximately 15 words for best display on listings.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.content.id_for_label }}">Content:</label>
+                    {{ form.content }}
+                    {% if form.content.errors %}
+                        <div class="error">{{ form.content.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <div class="form-check">
+                        {{ form.is_draft }}
+                        <label class="form-check-label" for="{{ form.is_draft.id_for_label }}">Save as draft</label>
+                    </div>
+                    <small class="text-muted">Drafts are only visible to you until published.</small>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn">Update Blog Post</button>
+                    <a href="{% url 'doctor_blog_list' %}" class="btn btn-secondary">Cancel</a>
+                    <a href="{% url 'delete_blog' blog.id %}" class="btn btn-danger">Delete Blog</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

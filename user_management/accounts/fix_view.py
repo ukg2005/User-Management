@@ -1,0 +1,36 @@
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.db import connection
+from django.contrib import messages
+from accounts.models import User
+
+@login_required
+def fix_user_types(request):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT id, username, user_type FROM accounts_user")
+        users = cursor.fetchall()
+    
+    changes = []
+    for user_id, username, user_type in users:
+        if user_type and user_type.strip() != user_type:
+            changes.append({
+                'user_id': user_id,
+                'username': username,
+                'old_type': repr(user_type),
+                'new_type': repr(user_type.strip())
+            })
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE accounts_user SET user_type = %s WHERE id = %s", 
+                    [user_type.strip(), user_id]
+                )
+            messages.success(request, f"[Fix User Type] Fixed user type for {username}")
+    
+    if not changes:
+        messages.info(request, "[Fix User Type] No user types needed fixing. All are correct.")
+    
+    return render(request, 'accounts/fix_user_types.html', {
+        'changes': changes,
+        'users': users
+    })

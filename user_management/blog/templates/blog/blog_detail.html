@@ -1,0 +1,46 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ blog.title }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <h1>{{ blog.title }}</h1>
+            <p>
+                <span>Category: {{ blog.category|default:"Uncategorized" }}</span><br>
+                <span>By Dr. {{ blog.author.first_name }} {{ blog.author.last_name }}</span><br>
+                <span>Published: {{ blog.created_at|date:"F d, Y" }}</span>
+                {% if blog.is_draft %}
+                    <span style="color: orange; font-weight: bold;"> - DRAFT</span>
+                {% endif %}
+            </p>
+        </div>
+        <div class="card-body">
+            {% if blog.image %}
+                <img src="{{ blog.image.url }}" class="blog-detail-image" alt="{{ blog.title }}">
+            {% endif %}
+            
+            <div class="blog-summary">
+                <h3>Summary</h3>
+                <p>{{ blog.summary }}</p>
+            </div>
+            
+            <div class="blog-content">
+                <h3>Full Article</h3>
+                <div style="white-space: pre-wrap;">{{ blog.content }}</div>
+            </div>
+            
+            {% if user.user_type == 'doctor' and user == blog.author %}
+                <div style="margin-top: 20px;">
+                    <a href="{% url 'edit_blog' blog.id %}" class="btn">Edit Blog Post</a>
+                </div>
+            {% endif %}
+            
+            <div style="margin-top: 20px;">
+                <a href="{% if user.user_type == 'doctor' %}{% url 'doctor_blog_list' %}{% else %}{% url 'patient_blog_list' %}{% endif %}" class="btn btn-secondary">
+                    Back to Blog List
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

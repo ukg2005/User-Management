@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fix User Types</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 40px auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .changes {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .users {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        .no-changes {
+            color: #666;
+            font-style: italic;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: white;
+            background-color: #007bff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="changes">
+        <h2>Changes Made</h2>
+        {% if changes %}
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>Old Type</th>
+                    <th>New Type</th>
+                </tr>
+                {% for change in changes %}
+                <tr>
+                    <td>{{ change.username }}</td>
+                    <td>{{ change.old_type }}</td>
+                    <td>{{ change.new_type }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p class="no-changes">No changes were needed. All user_type values are correct.</p>
+        {% endif %}
+    </div>
+    
+    <div class="users">
+        <h2>All Users</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>User Type</th>
+            </tr>
+            {% for user_id, username, user_type in users %}
+            <tr>
+                <td>{{ user_id }}</td>
+                <td>{{ username }}</td>
+                <td>{{ user_type }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    
+    <a href="{% url 'dashboard' %}" class="back-link">Back to Dashboard</a>
+</body>
+</html>

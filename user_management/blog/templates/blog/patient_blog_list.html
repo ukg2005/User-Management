@@ -1,0 +1,49 @@
+{% extends "blog/base.html" %}
+
+{% block title %}All Blog Posts{% endblock %}
+
+{% block content %}
+    <h1>Blog Posts</h1>
+    
+    <div class="category-filter">
+        <h3 style="margin-top: 0;">Categories</h3>
+        <div class="category-links">
+            <a href="{% url 'patient_blog_list' %}" class="category-link {% if not current_category %}active{% endif %}">
+                All Categories
+            </a>
+            {% for category in categories %}
+                <a href="{% url 'patient_blog_list' %}?category={{ category.slug }}" 
+                   class="category-link {% if current_category == category.slug %}active{% endif %}">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        {% if blogs %}
+            <div class="blog-grid">
+                {% for blog in blogs %}
+                    <div class="card">
+                        {% if blog.image %}
+                            <img src="{{ blog.image.url }}" class="blog-image" alt="{{ blog.title }}">
+                        {% endif %}
+                        <div class="card-header">
+                            <h3>{{ blog.title }}</h3>
+                            <p>
+                                <small>Category: {{ blog.category|default:"Uncategorized" }}</small><br>
+                                <small>By Dr. {{ blog.author.first_name }} {{ blog.author.last_name }} on {{ blog.created_at|date:"F d, Y" }}</small>
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ blog.summary|truncatewords:15 }}{% if blog.summary|wordcount > 15 %}...{% endif %}</p>
+                            <a href="{% url 'blog_detail' blog.id %}" class="btn">Read More</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No blog posts available in this category.</p>
+        {% endif %}
+    </div>
+{% endblock %}
